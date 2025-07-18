@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Student Study Planner{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <div class="py-5">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-graduation-cap text-primary"></i>
+                Student Study Planner
+            </h1>
+            <p class="lead mb-4">
+                Organize your academic life with our comprehensive study planner. 
+                Track tasks, manage deadlines, and upload study materials all in one place.
+            </p>
+            
+            <div class="row mb-5">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-tasks fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">Task Management</h5>
+                            <p class="card-text">Create, organize, and track your study tasks with ease.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-alt fa-3x text-success mb-3"></i>
+                            <h5 class="card-title">Deadline Tracking</h5>
+                            <p class="card-text">Never miss important deadlines with our reminder system.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-upload fa-3x text-info mb-3"></i>
+                            <h5 class="card-title">File Uploads</h5>
+                            <p class="card-text">Upload study materials, notes, and resources for each task.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if not session.user_id %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-md-2">
+                        <i class="fas fa-user-plus me-2"></i>Get Started
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </div>
+            {% else %}
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-tasks me-2"></i>Go to Dashboard
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

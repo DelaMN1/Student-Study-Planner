@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Task - Student Study Planner{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Edit Study Task
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">
+                                    <i class="fas fa-heading me-1"></i>Task Title *
+                                </label>
+                                <input type="text" class="form-control" id="title" name="title" value="{{ task.title }}" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">
+                                    <i class="fas fa-align-left me-1"></i>Description
+                                </label>
+                                <textarea class="form-control" id="description" name="description" rows="4" placeholder="Describe your study task...">{{ task.description or '' }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="due_date" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>Due Date
+                                </label>
+                                <input type="date" class="form-control" id="due_date" name="due_date" 
+                                       value="{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '' }}">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="status" class="form-label">
+                                    <i class="fas fa-flag me-1"></i>Status
+                                </label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="pending" {{ 'selected' if task.status == 'pending' else '' }}>Pending</option>
+                                    <option value="in_progress" {{ 'selected' if task.status == 'in_progress' else '' }}>In Progress</option>
+                                    <option value="completed" {{ 'selected' if task.status == 'completed' else '' }}>Completed</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="file" class="form-label">
+                                    <i class="fas fa-file-upload me-1"></i>Attach File
+                                </label>
+                                <input type="file" class="form-control" id="file" name="file" accept=".pdf,.txt,.png,.jpg,.jpeg,.gif,.doc,.docx">
+                                <div class="form-text">
+                                    Allowed: PDF, TXT, Images, DOC, DOCX (max 16MB)
+                                </div>
+                                
+                                {% if task.file_path %}
+                                    <div class="mt-2">
+                                        <small class="text-info">
+                                            <i class="fas fa-paperclip me-1"></i>Current file: {{ task.file_path.split('_', 1)[1] if '_' in task.file_path else task.file_path }}
+                                        </small>
+                                        <br>
+                                        <small class="text-muted">Upload a new file to replace the current one</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('view_task', task_id=task.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update Task
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
