@@ -51,6 +51,17 @@
                             </div>
                             
                             <div class="mb-3">
+                                <label for="priority" class="form-label">
+                                    <i class="fas fa-exclamation-circle me-1"></i>Priority
+                                </label>
+                                <select class="form-select" id="priority" name="priority">
+                                    <option value="High" {% if task.priority == 'High' %}selected{% endif %}>High</option>
+                                    <option value="Medium" {% if task.priority == 'Medium' %}selected{% endif %}>Medium</option>
+                                    <option value="Low" {% if task.priority == 'Low' %}selected{% endif %}>Low</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
                                 <label for="file" class="form-label">
                                     <i class="fas fa-file-upload me-1"></i>Attach File
                                 </label>

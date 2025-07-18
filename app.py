@@ -42,6 +42,7 @@ class Task(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    priority = db.Column(db.String(10), default='Medium')  # High, Medium, Low
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -136,6 +137,7 @@ def create_task():
         description = request.form['description']
         due_date_str = request.form['due_date']
         status = request.form['status']
+        priority = request.form.get('priority', 'Medium')
         
         due_date = None
         if due_date_str:
@@ -150,7 +152,8 @@ def create_task():
             description=description,
             due_date=due_date,
             status=status,
-            user_id=session['user_id']
+            user_id=session['user_id'],
+            priority=priority
         )
         
         # Handle file upload
@@ -200,6 +203,7 @@ def edit_task(task_id):
         task.description = request.form['description']
         due_date_str = request.form['due_date']
         task.status = request.form['status']
+        task.priority = request.form.get('priority', 'Medium')
         
         if due_date_str:
             try:

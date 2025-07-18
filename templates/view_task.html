@@ -22,7 +22,17 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-8">
-                        <h3 class="card-title">{{ task.title }}</h3>
+                        <h3 class="card-title">
+                            {{ task.title }}
+                            {% if task.priority %}
+                                <span class="badge ms-2"
+                                    style="
+                                        background-color: {% if task.priority == 'High' %}#dc3545{% elif task.priority == 'Medium' %}#ffc107{% else %}#28a745{% endif %};
+                                        color: #fff;">
+                                    {{ task.priority }}
+                                </span>
+                            {% endif %}
+                        </h3>
                         
                         <div class="mb-3">
                             <span class="badge bg-{{ 'warning' if task.status == 'pending' else 'info' if task.status == 'in_progress' else 'success' }} fs-6">
