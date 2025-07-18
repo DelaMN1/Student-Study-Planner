@@ -173,6 +173,17 @@ export SECRET_KEY=your-secure-secret-key
 export DATABASE_URL=postgresql://user:password@localhost/dbname
 ```
 
+## Environment Variables
+
+This app uses environment variables for configuration. Create a `.env` file in the project root with the following content:
+
+```
+SECRET_KEY=your-secret-key-change-this-in-production
+DATABASE_URL=sqlite:///study_planner.db
+```
+
+The app will automatically load these using [python-dotenv](https://pypi.org/project/python-dotenv/).
+
 ## File Structure
 
 ```
