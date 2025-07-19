@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid
 from dotenv import load_dotenv
 
@@ -100,12 +100,19 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        remember = request.form.get('remember') == 'on'
         
         user = User.query.filter_by(username=username).first()
         
         if user and check_password_hash(user.password_hash, password):
             session['user_id'] = user.id
             session['username'] = user.username
+            
+            # Set session to permanent if "remember me" is checked
+            if remember:
+                session.permanent = True
+                app.permanent_session_lifetime = timedelta(days=30)  # 30 days
+            
             flash('Login successful!', 'success')
             return redirect(url_for('dashboard'))
         else:
@@ -284,6 +291,74 @@ def toggle_task_status(task_id):
     db.session.commit()
     flash('Task status updated!', 'success')
     return redirect(url_for('dashboard'))
+
+@app.route('/profile')
+@login_required
+def profile():
+    user = db.session.get(User, session['user_id'])
+    if not user:
+        flash('User not found!', 'error')
+        return redirect(url_for('logout'))
+    return render_template('profile.html', user=user)
+
+@app.route('/profile/update', methods=['POST'])
+@login_required
+def update_profile():
+    user = db.session.get(User, session['user_id'])
+    if not user:
+        flash('User not found!', 'error')
+        return redirect(url_for('logout'))
+    
+    username = request.form['username']
+    email = request.form['email']
+    
+    # Check if username is already taken by another user
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user and existing_user.id != user.id:
+        flash('Username already exists!', 'error')
+        return redirect(url_for('profile'))
+    
+    # Check if email is already taken by another user
+    existing_email = User.query.filter_by(email=email).first()
+    if existing_email and existing_email.id != user.id:
+        flash('Email already registered!', 'error')
+        return redirect(url_for('profile'))
+    
+    user.username = username
+    user.email = email
+    db.session.commit()
+    
+    flash('Profile updated successfully!', 'success')
+    return redirect(url_for('profile'))
+
+@app.route('/profile/change-password', methods=['POST'])
+@login_required
+def change_password():
+    user = db.session.get(User, session['user_id'])
+    if not user:
+        flash('User not found!', 'error')
+        return redirect(url_for('logout'))
+    
+    current_password = request.form['current_password']
+    new_password = request.form['new_password']
+    confirm_new_password = request.form['confirm_new_password']
+    
+    # Verify current password
+    if not check_password_hash(user.password_hash, current_password):
+        flash('Current password is incorrect!', 'error')
+        return redirect(url_for('profile'))
+    
+    # Check if new passwords match
+    if new_password != confirm_new_password:
+        flash('New passwords do not match!', 'error')
+        return redirect(url_for('profile'))
+    
+    # Update password
+    user.password_hash = generate_password_hash(new_password)
+    db.session.commit()
+    
+    flash('Password changed successfully!', 'success')
+    return redirect(url_for('profile'))
 
 if __name__ == '__main__':
     with app.app_context():
