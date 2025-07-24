@@ -113,3 +113,13 @@ celerybeat.pid
 .mypy_cache/
 .dmypy.json
 dmypy.json 
+
+# Ignore Google OAuth credentials and other sensitive files
+credentials.json
+.env
+instance/*.db
+instance/*.bak
+__pycache__/
+*.pyc
+uploads/
+# End sensitive files 

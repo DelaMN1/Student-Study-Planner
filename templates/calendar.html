@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Calendar - Student Study Planner{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-calendar-alt me-2"></i>Task Calendar
+                </h4>
+                <div>
+                    <a href="{{ url_for('calendar_export') }}" class="btn btn-outline-light me-2">
+                        <i class="fas fa-download me-1"></i>Export to .ics
+                    </a>
+                    <a href="{{ url_for('google_auth') }}" class="btn btn-outline-light">
+                        <i class="fab fa-google me-1"></i>Sync with Google Calendar
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<style>
+    /* Highlight today cell in FullCalendar */
+    .fc-day-today {
+        background: #ffe082 !important;
+        border-radius: 6px;
+        box-shadow: 0 0 0 2px #ffc107;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        height: 650,
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: {
+            url: "{{ url_for('calendar_events') }}",
+            failure: function() {
+                alert('There was an error while fetching events!');
+            }
+        },
+        eventClick: function(info) {
+            if (info.event.url) {
+                window.open(info.event.url, '_blank');
+                info.jsEvent.preventDefault();
+            }
+        },
+        eventDisplay: 'block',
+        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false }
+    });
+    calendar.render();
+});
+</script>
+{% endblock %} 
