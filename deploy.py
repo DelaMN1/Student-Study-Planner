@@ -12,13 +12,13 @@ from pathlib import Path
 
 def run_command(command, description):
     """Run a command and handle errors"""
-    print(f"🔄 {description}...")
+    print(f"{description}...")
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-        print(f"✅ {description} completed successfully")
+        print(f"{description} completed successfully")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"❌ {description} failed: {e}")
+        print(f"{description} failed: {e}")
         print(f"Error output: {e.stderr}")
         return False
 
@@ -38,7 +38,7 @@ class ProductionConfig:
     
     with open('config.py', 'w') as f:
         f.write(config_content)
-    print("✅ Production configuration created")
+    print("Production configuration created")
 
 def create_gunicorn_config():
     """Create Gunicorn configuration file"""
@@ -56,7 +56,7 @@ preload_app = True
     
     with open('gunicorn.conf.py', 'w') as f:
         f.write(gunicorn_config)
-    print("✅ Gunicorn configuration created")
+    print("Gunicorn configuration created")
 
 def create_systemd_service():
     """Create systemd service file"""
@@ -79,8 +79,8 @@ WantedBy=multi-user.target
     
     with open('study-planner.service', 'w') as f:
         f.write(service_content)
-    print("✅ Systemd service file created")
-    print("⚠️  Remember to update the paths in study-planner.service")
+    print("Systemd service file created")
+    print("Remember to update the paths in study-planner.service")
 
 def create_nginx_config():
     """Create Nginx configuration"""
@@ -112,16 +112,16 @@ def create_nginx_config():
     
     with open('nginx-study-planner.conf', 'w') as f:
         f.write(nginx_config)
-    print("✅ Nginx configuration created")
-    print("⚠️  Remember to update the paths in nginx-study-planner.conf")
+    print("Nginx configuration created")
+    print("Remember to update the paths in nginx-study-planner.conf")
 
 def main():
     """Main deployment setup function"""
-    print("🚀 Setting up Student Study Planner for production deployment...")
+    print("Setting up Student Study Planner for production deployment...")
     
     # Check if we're in the right directory
     if not os.path.exists('app.py'):
-        print("❌ Error: app.py not found. Please run this script from the project root.")
+        print("Error: app.py not found. Please run this script from the project root.")
         sys.exit(1)
     
     # Create necessary directories
@@ -130,7 +130,7 @@ def main():
     
     # Install production dependencies
     if not run_command("pip install gunicorn", "Installing Gunicorn"):
-        print("❌ Failed to install Gunicorn")
+        print("Failed to install Gunicorn")
         sys.exit(1)
     
     # Create configuration files
@@ -148,7 +148,7 @@ DATABASE_URL=postgresql://user:password@localhost/dbname
     
     with open('.env.template', 'w') as f:
         f.write(env_template)
-    print("✅ Environment template created")
+    print("Environment template created")
     
     # Create deployment instructions
     instructions = """# Production Deployment Instructions
@@ -191,7 +191,7 @@ DATABASE_URL=postgresql://user:password@localhost/dbname
     
     with open('DEPLOYMENT.md', 'w') as f:
         f.write(instructions)
-    print("✅ Deployment instructions created")
+    print("Deployment instructions created")
     
     print("\n🎉 Production setup completed!")
     print("📋 Next steps:")

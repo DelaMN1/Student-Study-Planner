@@ -17,7 +17,7 @@ def migrate_database():
         if not os.path.exists(db_path):
             print(f"Database file {db_path} not found. Creating new database...")
             db.create_all()
-            print("✅ Database created successfully!")
+            print("Database created successfully!")
             return
         
         print(f"Migrating database: {db_path}")
@@ -44,9 +44,9 @@ def migrate_database():
                         FOREIGN KEY (user_id) REFERENCES user (id)
                     )
                 """)
-                print("✅ Category table created successfully!")
+                print("Category table created successfully!")
             else:
-                print("✅ Category table already exists!")
+                print("Category table already exists!")
             
             # Check if category_id column exists in task table
             cursor.execute("PRAGMA table_info(task)")
@@ -55,16 +55,16 @@ def migrate_database():
             if 'category_id' not in columns:
                 print("Adding category_id column to task table...")
                 cursor.execute("ALTER TABLE task ADD COLUMN category_id INTEGER REFERENCES category (id)")
-                print("✅ category_id column added successfully!")
+                print("category_id column added successfully!")
             else:
-                print("✅ category_id column already exists!")
+                print("category_id column already exists!")
             
             # Commit changes
             conn.commit()
-            print("✅ Database migration completed successfully!")
+            print("Database migration completed successfully!")
             
         except Exception as e:
-            print(f"❌ Error during migration: {e}")
+            print(f"Error during migration: {e}")
             conn.rollback()
             raise
         finally:

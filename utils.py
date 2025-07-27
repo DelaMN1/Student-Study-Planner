@@ -5,6 +5,8 @@ from config import Config
 
 def allowed_file(filename):
     """Check if the uploaded file has an allowed extension"""
+    if not filename:
+        return False
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in Config.ALLOWED_EXTENSIONS
 
 def login_required(f):
@@ -17,6 +19,8 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-def ensure_upload_folder():
+def ensure_upload_folder(folder_path=None):
     """Ensure the upload folder exists"""
-    os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True) 
+    if folder_path is None:
+        folder_path = Config.UPLOAD_FOLDER
+    os.makedirs(folder_path, exist_ok=True) 

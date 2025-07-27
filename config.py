@@ -15,4 +15,7 @@ class Config:
     GOOGLE_SCOPES = ['https://www.googleapis.com/auth/calendar.events']
     
     # Allowed file extensions
-    ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx'} 
+    ALLOWED_EXTENSIONS = {
+        'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx',
+        'xls', 'xlsx', 'ppt', 'pptx'
+    } 
