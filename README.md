@@ -140,38 +140,46 @@ class Task(db.Model):
 - **Access Control**: Users can only access their own tasks
 - **CSRF Protection**: Built-in Flask CSRF protection
 
-## Production Deployment
+## 📅 Calendar Integration
+- Go to the Calendar page from the navbar to see all your tasks on a visual calendar.
+- Click "Export to .ics" to download your tasks for import into any calendar app.
+- Click "Sync with Google Calendar" to push your tasks to your Google Calendar (requires Google login and consent).
 
-### Using Gunicorn
-```bash
-pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:8000 app:app
-```
+## Google Calendar Sync Setup
+1. **Create a Google Cloud Project** and enable the Google Calendar API.
+2. **Create OAuth 2.0 credentials** (Web application) and download the `credentials.json` file.
+3. **Place `credentials.json` in your project root** (same folder as `app.py`).
+4. **Add these redirect URIs in the Google Cloud Console:**
+   - For local development: `http://127.0.0.1:5050/google/callback`
+   - For production: `https://yourdomain.com/google/callback`
+5. **Add your Google account as a test user** in the OAuth consent screen settings.
+6. **For local development, set this environment variable before running your app:**
+   - On Windows PowerShell:
+     ```
+     $env:OAUTHLIB_INSECURE_TRANSPORT=1
+     python app.py
+     ```
+   - On Command Prompt:
+     ```
+     set OAUTHLIB_INSECURE_TRANSPORT=1
+     python app.py
+     ```
 
-### Nginx Configuration
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
+## Requirements
+- All dependencies are listed in `requirements.txt`. Install with:
+  ```
+  pip install -r requirements.txt
+  ```
+- For Google Calendar sync, you need:
+  - `google-auth`
+  - `google-auth-oauthlib`
+  - `google-auth-httplib2`
+  - `google-api-python-client`
+  - `icalendar`
 
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
-    location /uploads {
-        alias /path/to/your/app/uploads;
-    }
-}
-```
-
-### Environment Variables
-```bash
-export FLASK_ENV=production
-export SECRET_KEY=your-secure-secret-key
-export DATABASE_URL=postgresql://user:password@localhost/dbname
-```
+## Deployment Note
+- When deploying, add your production callback URI to the Google Cloud Console.
+- Make sure your app uses HTTPS in production for OAuth to work.
 
 ## Environment Variables
 
