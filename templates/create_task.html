@@ -61,6 +61,23 @@
                             </div>
                             
                             <div class="mb-3">
+                                <label for="category_id" class="form-label">
+                                    <i class="fas fa-tags me-1"></i>Category
+                                </label>
+                                <select class="form-select" id="category_id" name="category_id">
+                                    <option value="">No Category</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">
+                                    <a href="{{ url_for('main.create_category') }}" class="text-decoration-none">
+                                        <i class="fas fa-plus me-1"></i>Create new category
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
                                 <label for="file" class="form-label">
                                     <i class="fas fa-file-upload me-1"></i>Attach File
                                 </label>

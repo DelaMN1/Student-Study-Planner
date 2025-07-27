@@ -1,18 +1,42 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Student Study Planner{% endblock %}
+{% block title %}Search Results - Student Study Planner{% endblock %}
 
 {% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2>
+            <i class="fas fa-search me-2"></i>Search Results
+        </h2>
+        <p class="text-muted">
+            {% if query %}
+                Showing results for "{{ query }}"
+            {% endif %}
+            {% if status_filter %}
+                with status "{{ status_filter }}"
+            {% endif %}
+            {% if priority_filter %}
+                with priority "{{ priority_filter }}"
+            {% endif %}
+        </p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+
 <!-- Search and Filter Section -->
 <div class="row mb-4">
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form method="GET" action="{{ url_for('main.dashboard') }}" class="row g-3">
+                <form method="GET" action="{{ url_for('main.search_tasks') }}" class="row g-3">
                     <div class="col-md-4">
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" class="form-control" name="search" placeholder="Search tasks..." value="{{ search_query }}">
+                            <input type="text" class="form-control" name="q" placeholder="Search tasks..." value="{{ query }}">
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -47,30 +71,13 @@
                         </button>
                     </div>
                     <div class="col-md-1">
-                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-secondary w-100">
+                        <a href="{{ url_for('main.search_tasks') }}" class="btn btn-outline-secondary w-100">
                             <i class="fas fa-times me-1"></i>Clear
                         </a>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-8">
-        <h2>
-            <i class="fas fa-tasks me-2"></i>My Study Tasks
-            {% if search_query or status_filter or priority_filter %}
-                <small class="text-muted">(Filtered Results)</small>
-            {% endif %}
-        </h2>
-        <p class="text-muted">Welcome back, {{ user.username }}!</p>
-    </div>
-    <div class="col-md-4 text-end">
-        <a href="{{ url_for('main.create_task') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>New Task
-        </a>
     </div>
 </div>
 
@@ -172,55 +179,30 @@
             </div>
         {% endfor %}
     </div>
-{% else %}
-    <div class="text-center py-5">
-        <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
-        <h4 class="text-muted">No tasks yet</h4>
-        <p class="text-muted">Create your first study task to get started!</p>
-        <a href="{{ url_for('main.create_task') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Create First Task
-        </a>
-    </div>
-{% endif %}
-
-<!-- Task Statistics -->
-{% if tasks %}
-    <div class="row mt-5">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="fas fa-chart-bar me-2"></i>Task Statistics
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-md-3">
-                            <div class="border-end">
-                                <h3 class="text-primary">{{ tasks|length }}</h3>
-                                <p class="text-muted">Total Tasks</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="border-end">
-                                <h3 class="text-warning">{{ tasks|selectattr('status', 'equalto', 'pending')|list|length }}</h3>
-                                <p class="text-muted">Pending</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="border-end">
-                                <h3 class="text-info">{{ tasks|selectattr('status', 'equalto', 'in_progress')|list|length }}</h3>
-                                <p class="text-muted">In Progress</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <h3 class="text-success">{{ tasks|selectattr('status', 'equalto', 'completed')|list|length }}</h3>
-                            <p class="text-muted">Completed</p>
-                        </div>
-                    </div>
-                </div>
+    
+    <!-- Search Results Summary -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Found <strong>{{ tasks|length }}</strong> task{{ 's' if tasks|length != 1 else '' }} matching your search criteria.
             </div>
         </div>
+    </div>
+{% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-search fa-4x text-muted mb-3"></i>
+        <h4 class="text-muted">No tasks found</h4>
+        <p class="text-muted">
+            {% if query %}
+                No tasks match "{{ query }}"
+            {% else %}
+                No tasks match your current filters
+            {% endif %}
+        </p>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
     </div>
 {% endif %}
 {% endblock %} 
